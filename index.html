@@ -46,7 +46,7 @@
     <div class="user-info">
         <h3>Информация о пользователе:</h3>
         <p><strong>ID пользователя:</strong> <span id="user-id"></span></p>
-        <p><strong>Никнейм:</strong> <span id="user-username"></span></p>
+        <p><strong>1Никнейм:</strong> <span id="user-username"></span></p>
         <p><strong>chat_id (для отправки сообщений):</strong> <span id="chat-id"></span></p>
     </div>
 </div>
@@ -55,18 +55,25 @@
     // Инициализация Telegram Web App SDK
     Telegram.WebApp.init();
 
-    // Получаем данные о пользователе
-    const userId = Telegram.WebApp.initDataUnsafe.user.id; // Получаем user.id (ID пользователя)
-    const username = Telegram.WebApp.initDataUnsafe.user.username; // Получаем user.username (Никнейм)
-    const chatId = Telegram.WebApp.initDataUnsafe.user.id; // Мы можем использовать user.id как chat_id в случае с личным чатом
+    // Проверка на готовность WebApp SDK
+    if (Telegram.WebApp.initDataUnsafe) {
+        // Получаем данные о пользователе
+        const userId = Telegram.WebApp.initDataUnsafe.user.id; // Получаем user.id (ID пользователя)
+        const username = Telegram.WebApp.initDataUnsafe.user.username; // Получаем user.username (Никнейм)
+        const chatId = Telegram.WebApp.initDataUnsafe.user.id; // Мы можем использовать user.id как chat_id в случае с личным чатом
 
-    // Отображаем информацию о пользователе на странице
-    document.getElementById('user-id').textContent = userId;
-    document.getElementById('user-username').textContent = username;
-    document.getElementById('chat-id').textContent = chatId;
+        // Отображаем информацию о пользователе на странице
+        document.getElementById('user-id').textContent = userId;
+        document.getElementById('user-username').textContent = username;
+        document.getElementById('chat-id').textContent = chatId;
+    } else {
+        alert('Ошибка: данные пользователя не могут быть получены.');
+    }
 
     // Функция для отправки сообщения в Telegram
     function sendMessage() {
+        const chatId = Telegram.WebApp.initDataUnsafe.user.id; // Получаем chat_id из SDK
+
         if (chatId) {
             // Используем API Telegram для отправки сообщения
             var xhr = new XMLHttpRequest();
