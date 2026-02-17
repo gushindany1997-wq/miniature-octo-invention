@@ -1,9 +1,30 @@
+<?php
+// Токен вашего Telegram-бота
+$botToken = "6781973654:AAH8YoIyE5YWBQkeooreZGeADLX01_SlMfI";
+
+// URL вашего мини-приложения
+$miniAppUrl = "https://gushindany1997-wq.github.io/miniature-octo-invention/";
+
+// Код для отправки сообщения в Telegram (по кнопке или по событию)
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $chat_id = $_POST['chat_id']; // Получаем chat_id от клиента
+    $message = $_POST['message']; // Получаем сообщение от клиента
+
+    // URL для отправки сообщения через Telegram API
+    $url = "https://api.telegram.org/bot$botToken/sendMessage?chat_id=$chat_id&text=" . urlencode($message);
+
+    // Отправляем запрос
+    file_get_contents($url);
+}
+
+// HTML для отображения мини-приложения
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram Web App</title>
+    <title>Telegram Mini App</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -11,29 +32,50 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
+            background-color: #f7f7f7;
             margin: 0;
         }
         .container {
             text-align: center;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         button {
             padding: 10px 20px;
             font-size: 16px;
             cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Привет! Это мини-приложение Telegram.</h1>
-        <button onclick="sendMessage()">Отправить сообщение</button>
-    </div>
 
-    <script>
-        // Функция для отправки сообщения в Telegram
-        function sendMessage() {
-            window.Telegram.WebApp.sendData("Привет, это ваше сообщение!");
-        }
-    </script>
+<div class="container">
+    <h1>Привет! Это мини-приложение Telegram.</h1>
+    <p>Нажми на кнопку, чтобы отправить сообщение в Telegram боту.</p>
+    <button onclick="sendMessage()">Отправить сообщение в Telegram</button>
+</div>
+
+<script>
+    // Функция для отправки сообщения в Telegram через PHP
+    function sendMessage() {
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "index.php", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                alert("Сообщение отправлено!");
+            }
+        };
+        var data = "chat_id=123456789&message=Привет от мини-приложения!";
+        xhr.send(data);
+    }
+</script>
+
 </body>
 </html>
