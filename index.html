@@ -1,24 +1,3 @@
-<?php
-// Токен вашего Telegram-бота
-$botToken = "6781973654:AAH8YoIyE5YWBQkeooreZGeADLX01_SlMfI";
-
-// URL вашего мини-приложения
-$miniAppUrl = "https://gushindany1997-wq.github.io/miniature-octo-invention/";
-
-// Код для отправки сообщения в Telegram (по кнопке или по событию)
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $chat_id = $_POST['chat_id']; // Получаем chat_id от клиента
-    $message = $_POST['message']; // Получаем сообщение от клиента
-
-    // URL для отправки сообщения через Telegram API
-    $url = "https://api.telegram.org/bot$botToken/sendMessage?chat_id=$chat_id&text=" . urlencode($message);
-
-    // Отправляем запрос
-    file_get_contents($url);
-}
-
-// HTML для отображения мини-приложения
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -62,19 +41,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </div>
 
 <script>
-    // Функция для отправки сообщения в Telegram через PHP
+    // Функция для отправки сообщения в Telegram через Telegram Web App SDK
     function sendMessage() {
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", "index.php", true);
-        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState == 4 && xhr.status == 200) {
-                alert("Сообщение отправлено!");
-            }
-        };
-        var data = "chat_id=123456789&message=Привет от мини-приложения!";
-        xhr.send(data);
+        const urlParams = new URLSearchParams(window.location.search);
+        const chat_id = urlParams.get('chat_id');  // Получаем chat_id из URL параметров
+
+        if (chat_id) {
+            // Используем API Telegram для отправки сообщения
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "https://your-server.com/send-message", true); // Замените на реальный URL
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    alert("Сообщение отправлено!");
+                }
+            };
+
+            var data = "chat_id=" + chat_id + "&message=Привет от мини-приложения!";
+            xhr.send(data);
+        } else {
+            alert("Ошибка: chat_id не был передан.");
+        }
     }
+
+    // Инициализация Telegram Web App SDK
+    window.Telegram.WebApp.ready(); // Уведомляем Telegram, что приложение готово
 </script>
 
 </body>
